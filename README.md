@@ -1,52 +1,18 @@
 # DynamicWord2Vec
-Paper title:
-Dynamic Word Embeddings for Evolving Semantic Discovery. 
+## Introduction
+This fork makes the codes self-contained by completing the pmi matrix computation, which is missing from the original codes, changes the codes to be compatible with python3, and explains some of the variables in the codes. 
 
-Paper links:
-https://dl.acm.org/citation.cfm?id=3159703
-https://arxiv.org/abs/1703.00607
+## Inputs
+In order to run the code, prepare the following files:
+1. .txt files for each corpora. Each corpus must be in a separate file. The file names must follow the format [filestem]_[id].txt, where all the id's are consecutive integers, e.g. corpus_2018.txt, corpus_2019.txt, corpus_2020.txt, etc.
+2. a pre-trained word2vec or glove word vectors of dimension DIM (referred to as static embedding inside the codes) trained on the entire corpus, with each line following the format below:
+    - word[SPACE]coordinate1[SPACE]coordinate2[SPACE]...coordinateN[SPACE][NEWLINE]
+    - in other words, each line start with the word followed by its embedding vector, delimited by space
 
-Files:
+## Usage
+1. Run `python util_wordvec.py -dc /path/to/corpora/directory -fc filestemOfCorpora -ds /path/to/static/embedding -fs filestemOfEmbedding -s startnumber -e endnumber [-m mincount] [-l windowlength]`
+      - `mincount` and `windowlength` are optional, with default values `100` and `5` respectively
+      - Suppose your corpora are in the directory `/home/user/corpora/` , with file names `my_corpus_10.txt`, `my_corpus_11.txt`, ..., `my_corpus_19.txt`, and your static embedding has the abosolute path `/home/user/embedding/static_emb.txt`, then you should run `python util_wordvec.py -dc /home/user/corpora/ -fc my_corpus -ds /home/user/embedding/ -fs static_emb -s 10 -e 19`
+  This will generate the pmi matrices `wordPairPMI_[id].csv` for each corpus; `w2id_[filestem]_[startnumber]-[endnumber]_minc_[mincount].json` and `id2w_[filestem]_[startnumber]-[endnumber]_minc_[mincount].json`, which identify the words with thier corresponeding row number in the pmi matrices (the same ordering is also used in the final embedding); and `emb_static_d[DIM]_[startnumber]-[endnumber].mat`, which is the static embedding converted from .txt to .mat to be compatible with the main program.
 
-/embeddings
- - embeddings in loadable MATLAB files. 0 corresponds to 1990, 1 to 1991, ..., 19 to 2009.
- To save space, each year's embedding is saved separately. When used in visualization code, first merge to 1 embedding file.
- 
-/train_model
- - contains code used for training our embeddings
- - data file download: https://www.dropbox.com/s/nifi5nj1oj0fu2i/data.zip?dl=0
- 
-    /train_model/train_time_CD_smallnyt.py
-     - main training script
-
-    /train_model/util_timeCD.py
-     - containing helper functions
-
-/other_embeddings
- - contains code for training baseline embeddings
- - data file download: https://www.dropbox.com/s/tzkaoagzxuxtwqs/data.zip?dl=0
- 
-   /other_embeddings/staticw2v.py
-    - static word2vec (Mikolov et al 2013)
-    
-   /other_embeddings/aw2v.py
-    - aligned word2vec (Hamilton, Leskovec, Jufarsky 2016)
-    
-   /other_embeddings/tw2v.py
-    - transformed word2vec (Kulkarni, Al-Rfou, Perozzi, Skiena 2015)
-    
-/visualization
- - scripts for visualizations in paper
- 
-   /visualization/norm_plots.py
-    - changepoint detection figures
-    
-   /visualization/tsne_of_results.py
-    - trajectory figures
-    
-/distorted_smallNYT
- - code for robust experiment
- - data file download: https://www.dropbox.com/s/6q5jhhmxdmc8n1e/data.zip?dl=0
- 
-/misc
- - contains general statistics and word hash file
+2. 
